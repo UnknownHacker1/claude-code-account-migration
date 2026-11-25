@@ -3,3 +3,4 @@ pack-old-*/
 restore-backups/
 __pycache__/
 *.pyc
+NEXT_PROMPT.txt

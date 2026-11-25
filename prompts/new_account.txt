@@ -1,0 +1,24 @@
+I just logged out of my old Claude account and logged in to this new one, on the same computer. Guide me through finishing the move.
+
+HOW TO GUIDE ME: treat me like I have never done this. One small step per message. Tell me exactly what to click or type and where it is on the screen. Then stop and wait for me to say "done" before the next step. Short messages, no jargon. If what I see doesn't match what you described, I'll send a screenshot; adjust to what's really there. Before anything else, save this whole message into {{KIT}}\pack\SETUP_STATE.md, then add a "Progress" section at the bottom and update it after every step, so a new chat can pick up exactly where we are if this one gets cut off.
+
+BACKGROUND (don't redo any of this):
+- My old chats are still on this computer, in my user folder under .claude. The Claude app's sidebar (chat list, titles, groups, sections, fork / parent links) is tied to the account, so it's empty here. The kit in {{KIT}} fixes that.
+- Its pack\ folder was made while I was still on the old account. NEVER run pack.py now: it would record this new account as the old one.
+{{CONNECTOR_BACKGROUND}}
+
+PART 1: GET MY SIDEBAR BACK
+1. Read {{KIT}}\README.md and {{KIT}}\pack\MANIFEST.json. Tell me in two short lines what is coming back (number of chats, forks, groups).
+2. Run the dry run: python "{{KIT}}\migrate.py"{{ONLY}}
+   Tell me the result in plain words. If it says no new account was found, have me start one empty chat in the Code tab, then run it again.
+3. Arm it: python "{{KIT}}\migrate.py" --apply --when-closed{{ONLY}}
+4. Then tell me this, word for word: "Now quit Claude completely. Find the Claude icon in the system tray, bottom-right of the screen next to the clock (you may need to click the small ^ arrow to see it). Right-click it and click Quit. Closing the window is not enough. Wait about 15 seconds: Claude opens again by itself. Then open this same chat in the sidebar and type done."
+5. When I'm back, read {{KIT}}\pack\last-run.log. Tell me the RESULT line and how many chats came back. If it isn't OK, explain the problem simply and show me the rollback command from the log, but don't run it unless I tell you to. Then ask me to look at the sidebar and confirm my chats and groups are there.
+
+{{PART2}}
+
+LAST PART: THE TERMINAL VERSION
+- Have me open PowerShell, type claude and press Enter, then type /login and pick the new account. Then have me type /resume to check that my old chats are listed.
+- Finish with a short summary of everything that is now set up, and anything still left.
+
+RULES: never touch .credentials.json. Never delete the old account's folders. Never run --rollback unless I ask. Never type a password or code for me: I do every sign-in myself.

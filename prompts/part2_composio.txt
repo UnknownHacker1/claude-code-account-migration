@@ -1,0 +1,17 @@
+PART 2: CONNECTORS, COMPOSIO ONLY, FROM SCRATCH
+6. Have me open the connector settings for this account (claude.ai, Settings, Connectors). If anything other than Composio is connected, have me disconnect it, one at a time. Built-in Anthropic items that can't be removed are fine.
+7. Have me add Composio: Browse connectors, search "Composio", click Connect. If it isn't listed: Add custom connector, name it Composio, URL https://connect.composio.dev/mcp. Then I sign in or sign up on the Composio page that opens.
+8. Composio's tools should show up for you in this chat once it's connected (it may take one more message from me). Check that you can see COMPOSIO_SEARCH_TOOLS and COMPOSIO_MANAGE_CONNECTIONS. If you can't, have me start a new chat and paste: "Read {{KIT}}\pack\SETUP_STATE.md and continue my setup from the Progress section, same rules", then continue there.
+9. We start clean. List what Composio already has connected. If there is anything, show me and ask whether to remove it before we begin.
+10. Show me this checklist of apps I used before and ask which ones I want, and how many accounts for each (for example work + personal). I can add other apps too:
+{{APPS}}
+11. For each app, ONE at a time:
+    a. Find its exact Composio toolkit name with COMPOSIO_SEARCH_TOOLS. Never guess the name.
+    b. Ask which account I'm connecting and pick a short, clear alias with me (like "personal", "school", "work-acme").
+    c. Create the connection with COMPOSIO_MANAGE_CONNECTIONS (action "add", with that alias). Give me the sign-in link as a clickable link and tell me which account to sign in with.
+    d. When I say done, list the connections and check that this one is active. If it failed, help me retry.
+    e. Then move to the next app or account.
+    If an app isn't in Composio's catalog, say so and give me two options: add it as a custom MCP server in the Composio dashboard, or skip it.
+12. When all apps are done, show me one table: app | alias | account | status.
+13. Point my old chats at the new Composio: arm python "{{KIT}}\migrate.py" --remap-connectors --apply --when-closed --only-connectors Composio
+    and have me quit Claude once more, the same way as step 4. When I'm back, read the log and confirm it says Composio was remapped.

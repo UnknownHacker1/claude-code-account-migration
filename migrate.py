@@ -226,6 +226,9 @@ def run(args):
     new_dir = os.path.join(sess, new_acct, new_org)
     old_ids = session_ids(src)
     conns = load(os.path.join(pack, "connectors-to-reconnect.json"))
+    if args.only_connectors:
+        keep = {c.strip().lower() for c in args.only_connectors.split(",")}
+        conns = {n: i for n, i in conns.items() if n.lower() in keep}
     print(f"\n=== {'APPLY' if args.apply else 'DRY RUN'} ===")
 
     if args.remap_connectors:
@@ -288,6 +291,7 @@ def main():
     ap.add_argument("--app-data")
     ap.add_argument("--new-account")
     ap.add_argument("--new-org")
+    ap.add_argument("--only-connectors", help="comma list of connector names to carry over, e.g. Composio")
     ap.add_argument("--no-relaunch", action="store_true")
     ap.add_argument("--wait-pid", type=int, help=argparse.SUPPRESS)  # testing: wait for this pid instead
     ap.add_argument("--_waiter", action="store_true", help=argparse.SUPPRESS)

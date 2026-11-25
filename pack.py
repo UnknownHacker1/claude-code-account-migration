@@ -2,8 +2,8 @@
 
 Run this while still signed in to the OLD account. It only reads live data.
 
-    python pack.py                 # writes ./pack
-    python pack.py --out D:\\backup\\pack
+    python pack.py                       # writes ./pack and NEXT_PROMPT.txt (connectors via Composio)
+    python pack.py --native-connectors   # same, but the prompt reconnects normal connectors
 
 Never copied: .credentials.json and OAuth token caches.
 """
@@ -40,14 +40,46 @@ def copyfile(src, dst):
     return 0
 
 
+BUILT_IN_HOSTS = ("api.anthropic.com", "claudemcpcontent.com")
+
+
+def write_next_prompt(out, native):
+    """Fill prompts/new_account.txt with this machine's paths and app list -> NEXT_PROMPT.txt."""
+    p = lambda name: open(os.path.join(HERE, "prompts", name), encoding="utf-8").read()
+    conns = load(os.path.join(out, "connectors-to-reconnect.json"))
+    apps = [n for n, i in sorted(conns.items(), key=lambda kv: kv[0].lower())
+            if n.lower() != "composio" and not any(h in (i.get("url") or "") for h in BUILT_IN_HOSTS)]
+    apps_txt = "\n".join("   - " + a for a in apps) or "   (none found; ask me which apps I use)"
+    if native:
+        bg = "- Connectors: I'll reconnect my normal connectors one by one."
+        part2, only = p("part2_native.txt"), ""
+    else:
+        bg = ("- Connectors: I want ALL my connectors to go through Composio, set up brand new from scratch. "
+              "No separate Gmail / Drive / Slack connectors in Claude: one Composio connector, then one Composio "
+              "connection per app account, each with a clear alias.")
+        part2, only = p("part2_composio.txt"), " --only-connectors Composio"
+    text = p("new_account.txt").replace("{{PART2}}", part2.strip())
+    text = (text.replace("{{CONNECTOR_BACKGROUND}}", bg).replace("{{ONLY}}", only)
+                .replace("{{APPS}}", apps_txt).replace("{{KIT}}", HERE))
+    dst = os.path.join(HERE, "NEXT_PROMPT.txt")
+    open(dst, "w", encoding="utf-8").write(text)
+    return dst
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default=os.path.join(HERE, "pack"))
+    ap.add_argument("--native-connectors", action="store_true",
+                    help="reconnect normal connectors instead of moving everything to Composio")
+    ap.add_argument("--prompt-only", action="store_true", help="only rewrite NEXT_PROMPT.txt from the existing pack")
     ap.add_argument("--app-data", help="Claude desktop data folder (auto-detected)")
     ap.add_argument("--account", help="old account UUID (default: whoever is signed in now)")
     ap.add_argument("--org", help="old organization UUID")
     ap.add_argument("--force", action="store_true", help="re-pack even if the signed-in account changed")
     args = ap.parse_args()
+    out = os.path.join(HERE, "pack")
+    if args.prompt_only:
+        print("Wrote", write_next_prompt(out, args.native_connectors))
+        return
 
     app = find_app_data(args.app_data)
     cli = cli_dir()
@@ -59,7 +91,6 @@ def main():
     if not os.path.isdir(os.path.join(app, "claude-code-sessions", acct, org)):
         sys.exit(f"No session folder for account {acct} / org {org} in {app}")
 
-    out = args.out
     old_man = os.path.join(out, "MANIFEST.json")
     if os.path.exists(old_man) and not args.force:
         prev = load(old_man)
@@ -150,6 +181,8 @@ def main():
     print(json.dumps({k: v for k, v in manifest.items() if k != "sessions_without_transcript_file"}, indent=2))
     print("chats without a transcript file (already, before migrating):", len(missing))
     print("\nPack written to", out)
+    nxt = write_next_prompt(out, args.native_connectors)
+    print("Next prompt (paste it into Claude after you log in to the new account):", nxt)
 
 
 if __name__ == "__main__":

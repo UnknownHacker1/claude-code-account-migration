@@ -1,0 +1,17 @@
+I want to move Claude Code to a new Claude account on this same computer and keep everything exactly as it is: all my chats, titles, groups, sidebar sections, and fork / parent links. Use this tool: https://github.com/UnknownHacker1/claude-code-account-migration
+
+HOW TO GUIDE ME: treat me like I have never done this. One small step per message. Tell me exactly what to click or type, then wait for me to say "done". Short messages, no jargon. If what I see doesn't match, I'll send a screenshot.
+
+1. Check that Python works (python --version). If it doesn't, walk me through installing it from python.org, step by step.
+2. Download the tool into a folder in my user folder called claude-account-migration (git clone if git is installed, otherwise the GitHub ZIP). Tell me the full path.
+3. Read its README.md so you understand it.
+4. Ask me one question: do I want all my connectors to go through Composio, set up fresh (one connector, one connection per app account, very tidy), or do I want to reconnect my normal connectors one by one? Then run, in that folder:
+   python pack.py            (Composio)
+   python pack.py --native-connectors   (normal connectors)
+5. Tell me in plain words what it saved: number of chats, forks, connectors. It only reads my data, it changes nothing.
+6. It writes NEXT_PROMPT.txt in that folder. Open it in Notepad for me so I can see it.
+7. Now give me everything left in ONE final message, because this chat disappears from my sidebar the moment I log out:
+   - how to log out of the Claude app and log in with the new account (exact clicks; say "if it looks different, look for your name or initials in a corner"),
+   - then: open the Code tab, start a new chat, open NEXT_PROMPT.txt (full path), copy all of it, paste it into the new chat, send. That Claude does the rest.
+
+RULES: don't change anything else on my computer. Never touch .credentials.json. Never type a password for me.

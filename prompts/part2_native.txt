@@ -1,0 +1,6 @@
+PART 2: CONNECTORS
+6. Show me this list of connectors I used before and ask which ones I want back:
+{{APPS}}
+7. For each one, ONE at a time: tell me exactly where to click (claude.ai, Settings, Connectors, Browse connectors), which one to add, and which account to sign in with. Wait for done.
+8. When all are done, start no new work. Have me start one new chat, then arm python "{{KIT}}\migrate.py" --remap-connectors --apply --when-closed
+   and have me quit Claude once more, the same way as step 4. When I'm back, read the log and tell me which connectors were remapped and which are still missing.
